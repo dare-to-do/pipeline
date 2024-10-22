@@ -253,8 +253,8 @@ def run():
 def handler(event, context):
     thread = Thread(target=run)
     thread.start()
-    run()
     thread.join()
+    run()
     return {
         'statusCode': 200,
         'body': scrap_results
