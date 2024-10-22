@@ -17,6 +17,13 @@ var/
 *.egg
 
 # Serverless directories
-.serverless
+scraping-keyboard/.serverless
 
 README.md
+node_modules
+package-lock.json
+package.json
+.idea
+.serverless
+
+*.pem
