@@ -65,8 +65,6 @@ def get_product_details(contents):
 
 def get_category(product_name):
     product_name = product_name.lower()
-    # 이 카테고리도 어떻게 할지 정해야하고
-    # 그럼 swagkey 데이터는 넣을 수 있을 것 같은데
 
     if "part" in product_name or "보강판" in product_name:
         return "보강판"
@@ -77,6 +75,8 @@ def get_category(product_name):
     elif "kit" in product_name or "키트" in product_name:
         return "KIT"
     elif "keyboard" in product_name or "키보드" in product_name:
+        return "키보드"
+    else:
         return "키보드"
 
 
@@ -232,7 +232,7 @@ def run():
     content_containers = main_container.locator('.item-overlay')
     # container_count = new_container_count - prev_container_count
 
-    for i in range(10):
+    for i in range(5):
         container = content_containers.nth(i)
         expect(container).to_be_visible()
 
@@ -255,8 +255,10 @@ def handler(event, context):
     thread.start()
     thread.join()
     run()
+
     return {
         'statusCode': 200,
+        'from': 'swagkey',
         'body': scrap_results
     }
 
