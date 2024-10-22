@@ -190,6 +190,7 @@ def scrap(container, page):
     end_date = get_end_date(period)
 
     scrap_results.append({
+        "page_url": page.url,
         "product_name": product_name,
         "price": price,
         "category": category,
@@ -199,7 +200,6 @@ def scrap(container, page):
     })
 
     page.go_back(wait_until='domcontentloaded', timeout=0)
-    # page.wait_for_load_state('load')
 
 
 def check_count_changed(new_count, prev_count):
