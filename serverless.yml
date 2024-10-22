@@ -1,14 +1,105 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: juy4556
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: scraping-keyboard
-# "service" is the name of this project. This will also be added to your AWS resource names.
+org: daretodo
+app: gibi
 service: scraping-keyboard
 
 provider:
   name: aws
+  region: ap-northeast-2
   runtime: python3.12
+  iam:
+    role: RoleForLambda
+  versionFunctions: false
+  stackName: serverless-scraping-keyboard
+  timeout: 10 # minutes
+  environment:
+    version: ${opt:ver, "1"}
+    tersion: ${opt:ver, "1"}
+  deploymentBucket:
+    name: ${aws:accountId}-${self:service}
+    maxPreviousDeploymentArtifacts: 5
+    blockPublicAccess: true
+  deploymentPrefix: ${self:app}
 
 functions:
-  hello:
-    handler: handler.hello
+  scrap-test:
+    name: "scrap-test"
+    handler: src/lambda/scrap/scraping-test.handler
+#  scrap-swagkey:
+#    name: "scrap-swagkey"
+#    handler: src/lambda/scrap/scraping-swagkey.handler
+#  scrap-zfrontier:
+#    name: "scrap-zfrontier"
+#    handler: src/lambda/scrap/scraping-zfrontier.handler
+
+resources:
+  Resources:
+    RoleForLambda:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: RoleForScrapingLambda
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: LogPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:*
+                  Resource: "*"
+          - PolicyName: S3Policy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:PutObject
+                    - s3:GetObject
+                    - s3:ListBucket
+                  Resource:
+                    - arn:aws:s3:::${self:provider.deploymentBucket.name}/*
+                    - arn:aws:s3:::${self:provider.deploymentBucket.name}
+          - PolicyName: RDSPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - rds:Connect
+                    - rds:ExecuteStatement
+                    - rds:DescribeDBInstances
+                  Resource:
+                    - "*"
+          - PolicyName: SQSPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - sqs:SendMessage
+                    - sqs:ReceiveMessage
+                    - sqs:DeleteMessage
+                    - sqs:GetQueueAttributes
+                  Resource:
+                    - "*"
+
+    ScrapingDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: scraping-dlq
+
+custom:
+  splitStacks:
+    nestedStackCount: 5
+    perFunction: false
+    perType: false
+    perGroupFunction: true
+
+plugins:
+  - serverless-deployment-bucket
