@@ -2,10 +2,14 @@ from playwright.sync_api import sync_playwright, expect
 from threading import Thread
 import boto3
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 ssm_client = boto3.client('ssm')
 scrap_results = []
+
+utc_now = datetime.now(timezone.utc)
+seoul_timezone = timezone(timedelta(hours=9))
+seoul_now = utc_now.astimezone(seoul_timezone)
 
 
 def save_new_container_count(name, value):
@@ -174,6 +178,25 @@ def get_end_date(period):
     return get_iso_date(end_date)
 
 
+def get_period_status(start_date, end_date):
+    now = seoul_now.strftime("%Y-%m-%dT%H:%M:%S+09:00")
+    if not start_date and not end_date:
+        return "NOT CLASSIFIED"
+
+    if not start_date:
+        start_date = now
+
+    if not end_date:
+        end_date = now
+
+    if start_date <= now <= end_date:
+        return "IN PROGRESS"
+    elif now < start_date:
+        return "NOT YET"
+    elif now > end_date:
+        return "DONE"
+
+
 def scrap(container, page):
     container.click()
     page.wait_for_selector('div.inside[doz_type="inside"]', state='visible')
@@ -188,6 +211,7 @@ def scrap(container, page):
     category = get_category(product_name)
     start_date = get_start_date(period)
     end_date = get_end_date(period)
+    period_status = get_period_status(start_date, end_date)
 
     scrap_results.append({
         "page_url": page.url,
@@ -196,7 +220,8 @@ def scrap(container, page):
         "category": category,
         "start_date": start_date,
         "end_date": end_date,
-        "image": image_list
+        "image": image_list,
+        "period_status": period_status
     })
 
     page.go_back(wait_until='domcontentloaded', timeout=0)
@@ -254,10 +279,15 @@ def handler(event, context):
     thread = Thread(target=run)
     thread.start()
     thread.join()
-    run()
+    if scrap_results:
+        return {
+            'statusCode': 200,
+            'from': 'swagkey',
+            'body': scrap_results
+        }
 
     return {
-        'statusCode': 200,
+        'statusCode': 500,
         'from': 'swagkey',
         'body': scrap_results
     }
