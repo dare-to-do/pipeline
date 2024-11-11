@@ -52,6 +52,8 @@ def get_product_details(contents):
     summary = contents.locator('#prod_goods_form')
     product_name = summary.locator('div.view_tit:not(.ns-icon.prod_icon)').text_content()
     product_name = exclude_special_string(product_name, '판매대기')
+    product_name = exclude_special_string(product_name, '[예약판매]')
+    product_name = exclude_special_string(product_name, '[GB]')
 
     # 판매 기간
     period = contents.locator(
