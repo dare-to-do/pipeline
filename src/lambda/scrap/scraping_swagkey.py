@@ -31,7 +31,7 @@ def get_prev_container_count(name):
 
 
 def exclude_special_string(origin, target):
-    return origin.replace(target, '')
+    return origin.replace(target, '').strip()
 
 
 def get_image_list(image_container):
