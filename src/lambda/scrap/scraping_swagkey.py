@@ -216,14 +216,14 @@ def scrap(container, page):
     period_status = get_period_status(start_date, end_date)
 
     scrap_results.append({
-        "page_url": page.url,
         "product_name": product_name,
         "price": price,
         "category": category,
         "start_date": start_date,
         "end_date": end_date,
-        "image": image_list,
-        "period_status": period_status
+        "period_status": period_status,
+        "product_url": page.url,
+        "image_url": image_list,
     })
 
     page.go_back(wait_until='domcontentloaded', timeout=0)
