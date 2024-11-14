@@ -2,7 +2,7 @@ import pymysql
 import boto3
 import os
 import json
-from datetime import datetime, timezone, timedelta
+import re
 
 conn = None
 db_host = os.environ['HOST']
@@ -60,12 +60,6 @@ def insert_to_rdb(contents):
 
 
 def lambda_handler(event, context):
-    utc_now = datetime.now(timezone.utc)
-    seoul_timezone = timezone(timedelta(hours=9))
-    seoul_now = utc_now.astimezone(seoul_timezone)
-    now = seoul_now.strftime("%Y/%m/%d/%H")
-    print("now:", now)
-
     bucket_name = event['bucket_name']
     file_name = event['file_name']
 
