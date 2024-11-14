@@ -230,7 +230,7 @@ def scrap(container, page):
     page.go_back(wait_until='domcontentloaded', timeout=0)
 
 
-def check_count_changed(new_count, prev_count):
+def count_is_changed(new_count, prev_count):
     if new_count == prev_count:
         return False
     return True
