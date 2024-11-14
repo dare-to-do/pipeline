@@ -60,8 +60,9 @@ def insert_to_rdb(contents):
 
 
 def lambda_handler(event, context):
-    bucket_name = event['bucket_name']
-    file_name = event['file_name']
+    body = json.loads(event['Records'][0]['body'])
+    bucket_name = body['bucket_name']
+    file_name = body['file_name']
 
     try:
         contents = json.loads(get_from_s3(bucket_name, file_name))
