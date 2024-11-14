@@ -283,14 +283,14 @@ def handler(event, context):
     thread.join()
     if scrap_results:
         return {
-            'statusCode': 200,
+            'status_code': 200,
             'from': 'swagkey',
             'bucket_name': 'bucket-for-scraping-lambda',
             'body': scrap_results
         }
 
     return {
-        'statusCode': 500,
+        'status_code': 500,
         'from': 'swagkey',
         'body': scrap_results
     }
