@@ -32,4 +32,6 @@ def lambda_handler(event, context):
 
     content = event['body']
 
-    return upload_to_s3(bucket_name, file_name, bytes(json.dumps(content).encode('utf-8')))
+    result = upload_to_s3(bucket_name, file_name, bytes(json.dumps(content).encode('utf-8')))
+    result['from'] = site_name
+    return result
