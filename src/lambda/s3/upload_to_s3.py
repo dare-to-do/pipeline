@@ -27,10 +27,8 @@ def lambda_handler(event, context):
     bucket_name = event['bucket_name']
 
     now = seoul_now.strftime("%Y/%m/%d/%H")
-
     site_name = event['from']
     file_name = site_name + '/' + now + '.json'
-    image_name = site_name + '/' + now + '.png'
 
     content = event['body']
 
