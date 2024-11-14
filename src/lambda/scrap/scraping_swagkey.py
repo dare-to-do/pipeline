@@ -269,7 +269,7 @@ def run():
             scrap(container, page)
         except Exception as e:
             print("Exception: ", e)
-            continue
+            raise e
 
     save_new_container_count('swagkey-container-count', str(new_container_count))
     page.close()
@@ -281,6 +281,7 @@ def handler(event, context):
     thread = Thread(target=run)
     thread.start()
     thread.join()
+
     if scrap_results:
         return {
             'status_code': 200,
@@ -294,6 +295,3 @@ def handler(event, context):
         'from': 'swagkey',
         'body': scrap_results
     }
-
-
-print(handler(None, None))
