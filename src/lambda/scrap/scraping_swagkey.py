@@ -239,7 +239,7 @@ def count_is_changed(new_count, prev_count):
 def run():
     playwright = sync_playwright().start()
     chromium = playwright.chromium
-    browser = chromium.launch(headless=False,
+    browser = chromium.launch(headless=True,
                               args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--single-process'])
 
     page = browser.new_page()
