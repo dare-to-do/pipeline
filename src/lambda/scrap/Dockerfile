@@ -39,4 +39,4 @@ WORKDIR ${FUNCTION_DIR}
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
 ENTRYPOINT [ "/usr/bin/python3", "-m", "awslambdaric" ]
-CMD [ "scraping-test.handler" ]
+CMD [ "scraping_swagkey.handler" ]
