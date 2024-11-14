@@ -27,11 +27,12 @@ def connect_to_rds():
 
 def get_from_s3(bucket_name, file_name):
     s3 = boto3.client('s3')
+
     try:
         response = s3.get_object(Bucket=bucket_name, Key=file_name)
-        print("Response:", response)
         return response['Body'].read().decode('utf-8')
     except Exception as e:
+        print(f"Error getting object from S3: {str(e)}")
         raise e
 
 
