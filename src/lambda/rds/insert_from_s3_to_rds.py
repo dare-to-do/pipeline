@@ -52,11 +52,11 @@ def insert_to_rdb(contents):
         end_date = content['end_date']
         period_status = content['period_status']
         product_url = content['product_url']
-        image_url = content['image_url']
         print(content)
         sql_query = (f"insert into product (name, price, type, start_date, end_date, status, image_url, product_url) "
                      f"values ({product_name}, {price}, {category}, {start_date}, {end_date}, "
                      f"{period_status}, {image_url}, {product_url})")
+        image_url = ",".join(content['image_url']).strip("[]")
 
         cur.execute(sql_query)
 
