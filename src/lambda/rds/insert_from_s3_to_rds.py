@@ -68,6 +68,7 @@ def insert_to_rdb(contents):
             raise e
 
     conn.commit()
+    cur.close()
     conn.close()
 
 
@@ -77,7 +78,9 @@ def lambda_handler(event, context):
     file_name = body['file_name']
 
     try:
-        contents = json.loads(get_from_s3(bucket_name, file_name))
+        s3_content = get_from_s3(bucket_name, file_name)
+        contents = json.loads(s3_content)
+
         insert_to_rdb(contents)
 
         return {
