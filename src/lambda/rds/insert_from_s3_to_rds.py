@@ -36,13 +36,17 @@ def get_from_s3(bucket_name, file_name):
         raise e
 
 
+def remove_non_numeric_chars(input_string):
+    return re.sub(r'[^0-9]', '', input_string)
+
+
 def insert_to_rdb(contents):
     connect_to_rds()
     cur = conn.cursor()
 
     for content in contents:
         product_name = content['product_name']
-        price = content['price']
+        price = int(remove_non_numeric_chars(content['price']))
         category = content['category']
         start_date = content['start_date']
         end_date = content['end_date']
