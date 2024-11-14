@@ -54,6 +54,7 @@ def get_product_details(contents):
     product_name = exclude_special_string(product_name, '판매대기')
     product_name = exclude_special_string(product_name, '[예약판매]')
     product_name = exclude_special_string(product_name, '[GB]')
+    product_name = exclude_special_string(product_name, '[Pre-order]')
 
     # 판매 기간
     period = contents.locator(
