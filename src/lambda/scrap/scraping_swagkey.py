@@ -285,6 +285,7 @@ def handler(event, context):
         return {
             'statusCode': 200,
             'from': 'swagkey',
+            'bucket_name': 'bucket-for-scraping-lambda',
             'body': scrap_results
         }
 
