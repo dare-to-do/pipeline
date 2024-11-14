@@ -13,6 +13,7 @@ def upload_to_s3(bucket_name, file_name, file_content):
         s3.put_object(Bucket=bucket_name, Key=file_name, Body=file_content)
         return {
             'status_code': 200,
+            'bucket_name': bucket_name,
             'file_name': file_name
         }
     except Exception as e:
