@@ -16,7 +16,7 @@ def save_new_container_count(name, value):
     response = ssm_client.put_parameter(
         Name=name,
         Value=value,
-        Type='Integer',
+        Type='String',
         Overwrite=True
     )
     return response
@@ -27,7 +27,7 @@ def get_prev_container_count(name):
         Name=name,
         WithDecryption=False
     )
-    return response['Parameter']['Value']
+    return int(response['Parameter']['Value'])
 
 
 def exclude_special_string(origin, target):
@@ -251,16 +251,14 @@ def run():
     main_container = page.locator('div.inside')
 
     new_container_count = int(main_container.locator('.text-brand._unit').text_content())
-    # prev_container_count = get_prev_container_count('swagkey-container-count')
-    # if not check_count_changed(new_container_count, prev_container_count):
-    #     raise Exception("Container count is not changed")
-
-    # save_new_container_count('swagkey-container-count', new_container_count)
+    prev_container_count = get_prev_container_count('swagkey-container-count')
+    if not count_is_changed(new_container_count, prev_container_count):
+        return scrap_results
 
     content_containers = main_container.locator('.item-overlay')
-    # container_count = new_container_count - prev_container_count
+    container_count = new_container_count - prev_container_count
 
-    for i in range(5):
+    for i in range(container_count):
         container = content_containers.nth(i)
         expect(container).to_be_visible()
 
@@ -273,6 +271,7 @@ def run():
             print("Exception: ", e)
             continue
 
+    save_new_container_count('swagkey-container-count', str(new_container_count))
     page.close()
     browser.close()
     playwright.stop()
