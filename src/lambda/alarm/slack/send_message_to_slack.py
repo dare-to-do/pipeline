@@ -3,7 +3,6 @@ import os
 from datetime import datetime, timezone, timedelta
 
 text = "scraping failed"
-title = "Scraping Failure Alert"
 slack_url = os.environ['SLACK_URL']
 
 utc_now = datetime.now(timezone.utc)
@@ -19,5 +18,6 @@ def send_msg_to_slack(url, msg, title):
 def lambda_handler(event, context):
     site_name = event['from']
     msg = f"{site_name} Scraping Failed at {seoul_now}"
+    title = f"{site_name} 스크래핑 실패"
     send_msg_to_slack(slack_url, msg, title)
     return {'statusCode': 200, 'body': 'Post SUCCESS'}
