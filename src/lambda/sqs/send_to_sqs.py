@@ -15,13 +15,13 @@ def send_to_sqs(message):
 
         print(f"Message sent to SQS: {response['MessageId']}")
         return {
-            'statusCode': 200,
+            'status_code': 200,
             'body': json.dumps('Messages sent to SQS successfully!')
         }
     except Exception as e:
         print(f"Error sending message to SQS: {str(e)}")
         return {
-            'statusCode': 500,
+            'status_code': 500,
             'body': json.dumps('Error sending messages to SQS!')
         }
 
