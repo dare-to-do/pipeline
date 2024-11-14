@@ -25,7 +25,7 @@ COPY ./* ${FUNCTION_DIR}
 # Install the runtime interface client
 RUN pip3 install  \
     --target ${FUNCTION_DIR} \
-    awslambdaric playwright
+    awslambdaric playwright boto3
 
 # Multi-stage build: grab a fresh copy of the base image
 FROM mcr.microsoft.com/playwright:v1.48.2-jammy
