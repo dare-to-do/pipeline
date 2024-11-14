@@ -24,7 +24,8 @@ def upload_to_s3(bucket_name, file_name, file_content):
 
 
 def lambda_handler(event, context):
-    bucket_name = 'bucket-for-scraping-lambda'
+    bucket_name = event['bucket_name']
+
     now = seoul_now.strftime("%Y/%m/%d/%H")
 
     site_name = event['from']
