@@ -1,0 +1,18 @@
+name: PR Reminder
+
+on:
+  schedule:
+    - cron: '0 1,4,10 * * 0-6'
+
+jobs:
+  pr-reviews-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: davideviolante/pr-reviews-reminder-action@v2.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          provider: 'slack'
+          channel: 'github_알림'
+          github-provider-map: 'juy4556:U0725C03KUN,headF1rst:U0730N629TJ'
