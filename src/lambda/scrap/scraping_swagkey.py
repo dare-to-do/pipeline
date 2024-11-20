@@ -287,7 +287,13 @@ def run():
             scrap(container, page)
         except Exception as e:
             print("Exception: ", e)
-            raise e
+            return {
+                'status_code': 500,
+                'from': 'swagkey',
+                'body': {
+                    'error': str(e)
+                }
+            }
 
     save_new_container_count('swagkey-container-count', str(new_container_count))
     page.close()
