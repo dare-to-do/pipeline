@@ -80,9 +80,11 @@ def get_product_details(contents):
     ).text_content()
 
     # 상품 가격
-    price = summary.locator('div.pay_detail .real_price').text_content()
+    price_text = summary.locator('div.pay_detail .real_price').text_content()
+    price = get_price(price_text)
+    unit = get_unit(price_text)
 
-    return [product_name, price, period]
+    return [product_name, price, unit, period]
 
 
 def get_category(product_name):
@@ -224,7 +226,7 @@ def scrap(container, page):
     image_container = contents.locator('div.owl-stage')
 
     image_list = get_image_list(image_container)
-    product_name, price, period = get_product_details(contents)
+    product_name, price, unit, period = get_product_details(contents)
 
     category = get_category(product_name)
     start_date = get_start_date(period)
@@ -234,6 +236,7 @@ def scrap(container, page):
     scrap_results.append({
         "product_name": product_name,
         "price": price,
+        "unit": unit,
         "category": category,
         "start_date": start_date,
         "end_date": end_date,
