@@ -47,6 +47,10 @@ def get_image_list(image_container):
     return image_list
 
 
+def get_price(price_text):
+    return re.sub(r'\D', '', price_text)
+
+
 def get_unit(price_text):
     price_text = price_text.lower()
 
