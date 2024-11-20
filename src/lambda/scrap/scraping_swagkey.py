@@ -47,6 +47,17 @@ def get_image_list(image_container):
     return image_list
 
 
+def get_unit(price_text):
+    price_text = price_text.lower()
+
+    if "달러" in price_text or "usd" in price_text or "$" in price_text:
+        return "달러"
+    elif "원" in price_text or "krw" in price_text or "₩" in price_text:
+        return "원"
+    else:
+        return "UNKNOWN"
+
+
 def get_product_details(contents):
     # 상품 이름
     summary = contents.locator('#prod_goods_form')
