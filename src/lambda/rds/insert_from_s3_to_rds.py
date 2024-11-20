@@ -51,7 +51,7 @@ def insert_to_rdb(contents):
         image_url = ",".join(content['image_url']).strip("[]")
 
         sql_query = ("""
-            INSERT INTO product (name, price, unit, type, start_date, end_date, status, image_url, product_url)
+            INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """)
 
