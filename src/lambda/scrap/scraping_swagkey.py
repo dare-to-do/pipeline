@@ -91,17 +91,17 @@ def get_category(product_name):
     product_name = product_name.lower()
 
     if "part" in product_name or "보강판" in product_name:
-        return "보강판"
-    elif "기판" in product_name or "pcb" in product_name:
-        return "PCB"
-    elif "frame" in product_name or "프레임" in product_name:
-        return "FRAME"
+        return "PARTS"
+    elif "switch" in product_name or "스위치" in product_name:
+        return "SWITCH"
+    elif "keycap" in product_name or "키캡" in product_name:
+        return "KEYCAP"
+    elif "stabilizer" in product_name or "스타빌라이저" in product_name:
+        return "STABILIZER"
     elif "kit" in product_name or "키트" in product_name:
         return "KIT"
-    elif "keyboard" in product_name or "키보드" in product_name:
-        return "키보드"
     else:
-        return "키보드"
+        return "KEYBOARD"
 
 
 def get_iso_date(date):
