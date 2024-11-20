@@ -2,7 +2,6 @@ import pymysql
 import boto3
 import os
 import json
-import re
 
 conn = None
 db_host = os.environ['HOST']
@@ -34,10 +33,6 @@ def get_from_s3(bucket_name, file_name):
     except Exception as e:
         print(f"Error getting object from S3: {str(e)}")
         raise e
-
-
-def remove_non_numeric_chars(input_string):
-    return re.sub(r'[^0-9]', '', input_string)
 
 
 def insert_to_rdb(contents):
