@@ -210,9 +210,9 @@ def get_period_status(start_date, end_date):
         end_date = now
 
     if start_date <= now <= end_date:
-        return "IN PROGRESS"
+        return "IN_PROGRESS"
     elif now < start_date:
-        return "NOT YET"
+        return "NOT_YET"
     elif now > end_date:
         return "DONE"
 
