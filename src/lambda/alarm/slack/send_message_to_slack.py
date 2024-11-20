@@ -19,4 +19,4 @@ def lambda_handler(event, context):
     title = f"{site_name} 스크래핑 실패"
     msg = f"{site_name}에서 데이터를 못 가져왔습니다 😭 {seoul_now}"
     send_msg_to_slack(slack_url, msg, title)
-    return {'statusCode': 200, 'body': 'Post SUCCESS'}
+    return {'status_code': 200, 'body': 'Post SUCCESS'}
