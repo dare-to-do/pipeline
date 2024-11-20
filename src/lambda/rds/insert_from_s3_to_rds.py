@@ -46,7 +46,8 @@ def insert_to_rdb(contents):
 
     for content in contents:
         product_name = content['product_name']
-        price = int(remove_non_numeric_chars(content['price']))
+        price = int(content['price'])
+        unit = content['unit']
         category = content['category']
         start_date = content['start_date']
         end_date = content['end_date']
@@ -55,13 +56,14 @@ def insert_to_rdb(contents):
         image_url = ",".join(content['image_url']).strip("[]")
 
         sql_query = ("""
-            INSERT INTO product (name, price, type, start_date, end_date, status, image_url, product_url)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO product (name, price, unit, type, start_date, end_date, status, image_url, product_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """)
 
         try:
             cur.execute(sql_query,
-                        (product_name, price, category, start_date, end_date, period_status, image_url, product_url))
+                        (product_name, price, unit, category, start_date, end_date, period_status, image_url,
+                         product_url))
         except pymysql.MySQLError as e:
             print(f"Error executing SQL query: {str(e)}")
             conn.rollback()
