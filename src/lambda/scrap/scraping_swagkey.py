@@ -55,9 +55,9 @@ def get_unit(price_text):
     price_text = price_text.lower()
 
     if "달러" in price_text or "usd" in price_text or "$" in price_text:
-        return "달러"
+        return "USD"
     elif "원" in price_text or "krw" in price_text or "₩" in price_text:
-        return "원"
+        return "KRW"
     else:
         return "UNKNOWN"
 
