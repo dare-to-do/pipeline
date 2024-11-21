@@ -201,7 +201,7 @@ def get_end_date(period):
 def get_period_status(start_date, end_date):
     now = seoul_now.strftime("%Y-%m-%dT%H:%M:%S+09:00")
     if not start_date and not end_date:
-        return "NOT CLASSIFIED"
+        return "UNKNOWN"
 
     if not start_date:
         start_date = now
