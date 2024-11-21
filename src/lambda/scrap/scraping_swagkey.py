@@ -56,10 +56,11 @@ def get_price_unit(price_text):
 
     if "달러" in price_text or "usd" in price_text or "$" in price_text:
         return "USD"
-    elif "원" in price_text or "krw" in price_text or "₩" in price_text:
+
+    if "원" in price_text or "krw" in price_text or "₩" in price_text:
         return "KRW"
-    else:
-        return "UNKNOWN"
+
+    return "UNKNOWN"
 
 
 def get_product_details(contents):
@@ -92,16 +93,16 @@ def get_category(product_name):
 
     if "part" in product_name or "보강판" in product_name:
         return "PARTS"
-    elif "switch" in product_name or "스위치" in product_name:
+    if "switch" in product_name or "스위치" in product_name:
         return "SWITCH"
-    elif "keycap" in product_name or "키캡" in product_name:
+    if "keycap" in product_name or "키캡" in product_name:
         return "KEYCAP"
-    elif "stabilizer" in product_name or "스타빌라이저" in product_name:
+    if "stabilizer" in product_name or "스타빌라이저" in product_name:
         return "STABILIZER"
-    elif "kit" in product_name or "키트" in product_name:
+    if "kit" in product_name or "키트" in product_name:
         return "KIT"
-    else:
-        return "KEYBOARD"
+
+    return "KEYBOARD"
 
 
 def get_iso_date(date):
@@ -211,10 +212,14 @@ def get_period_status(start_date, end_date):
 
     if start_date <= now <= end_date:
         return "IN_PROGRESS"
-    elif now < start_date:
+
+    if now < start_date:
         return "NOT_YET"
-    elif now > end_date:
+
+    if now > end_date:
         return "DONE"
+
+    return "UNKNOWN"
 
 
 def scrap(container, page):
