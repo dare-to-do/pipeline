@@ -1,0 +1,72 @@
+{
+  "Comment": "스크래핑 데이터 파이프라인",
+  "StartAt": "스크래핑 시작",
+  "States": {
+    "스크래핑 시작": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "swagkey 스크래핑",
+          "States": {
+            "swagkey 스크래핑": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-2:381492235267:function:scraping-swagkey",
+              "Next": "swagkey 스크래핑 성공 여부"
+            },
+            "swagkey 스크래핑 성공 여부": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.status_code",
+                  "NumericEquals": 200,
+                  "Next": "swagkey S3 업로드"
+                },
+                {
+                  "Variable": "$.status_code",
+                  "NumericEquals": 204,
+                  "Next": "가져올 데이터 없음"
+                }
+              ],
+              "Default": "swagkey 스크래핑 실패"
+            },
+            "swagkey S3 업로드": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-2:381492235267:function:upload_to_s3",
+              "Next": "swagkey S3 업로드 성공 여부"
+            },
+            "swagkey S3 업로드 성공 여부": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.status_code",
+                  "NumericEquals": 200,
+                  "Next": "swagkey SQS 전송"
+                }
+              ],
+              "Default": "swagkey 스크래핑 실패"
+            },
+            "swagkey SQS 전송": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-2:381492235267:function:send-to-sqs",
+              "End": true
+            },
+            "swagkey 스크래핑 실패": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-2:381492235267:function:send-message-to-slack",
+              "End": true
+            },
+            "가져올 데이터 없음": {
+              "Type": "Pass",
+              "End": true
+            }
+          }
+        }
+      ],
+      "Next": "종료"
+    },
+    "종료": {
+      "Type": "Pass",
+      "End": true
+    }
+  }
+}
