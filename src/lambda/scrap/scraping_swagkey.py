@@ -47,6 +47,22 @@ def get_image_list(image_container):
     return image_list
 
 
+def get_price(price_text):
+    return re.sub(r'\D', '', price_text)
+
+
+def get_price_unit(price_text):
+    price_text = price_text.lower()
+
+    if "달러" in price_text or "usd" in price_text or "$" in price_text:
+        return "USD"
+
+    if "원" in price_text or "krw" in price_text or "₩" in price_text:
+        return "KRW"
+
+    return "UNKNOWN"
+
+
 def get_product_details(contents):
     # 상품 이름
     summary = contents.locator('#prod_goods_form')
@@ -65,26 +81,28 @@ def get_product_details(contents):
     ).text_content()
 
     # 상품 가격
-    price = summary.locator('div.pay_detail .real_price').text_content()
+    price_text = summary.locator('div.pay_detail .real_price').text_content()
+    price = get_price(price_text)
+    price_unit = get_price_unit(price_text)
 
-    return [product_name, price, period]
+    return [product_name, price, price_unit, period]
 
 
 def get_category(product_name):
     product_name = product_name.lower()
 
     if "part" in product_name or "보강판" in product_name:
-        return "보강판"
-    elif "기판" in product_name or "pcb" in product_name:
-        return "PCB"
-    elif "frame" in product_name or "프레임" in product_name:
-        return "FRAME"
-    elif "kit" in product_name or "키트" in product_name:
+        return "PARTS"
+    if "switch" in product_name or "스위치" in product_name:
+        return "SWITCH"
+    if "keycap" in product_name or "키캡" in product_name:
+        return "KEYCAP"
+    if "stabilizer" in product_name or "스타빌라이저" in product_name:
+        return "STABILIZER"
+    if "kit" in product_name or "키트" in product_name:
         return "KIT"
-    elif "keyboard" in product_name or "키보드" in product_name:
-        return "키보드"
-    else:
-        return "키보드"
+
+    return "KEYBOARD"
 
 
 def get_iso_date(date):
@@ -184,7 +202,7 @@ def get_end_date(period):
 def get_period_status(start_date, end_date):
     now = seoul_now.strftime("%Y-%m-%dT%H:%M:%S+09:00")
     if not start_date and not end_date:
-        return "NOT CLASSIFIED"
+        return "UNKNOWN"
 
     if not start_date:
         start_date = now
@@ -193,11 +211,15 @@ def get_period_status(start_date, end_date):
         end_date = now
 
     if start_date <= now <= end_date:
-        return "IN PROGRESS"
-    elif now < start_date:
-        return "NOT YET"
-    elif now > end_date:
+        return "IN_PROGRESS"
+
+    if now < start_date:
+        return "NOT_YET"
+
+    if now > end_date:
         return "DONE"
+
+    return "UNKNOWN"
 
 
 def scrap(container, page):
@@ -209,7 +231,7 @@ def scrap(container, page):
     image_container = contents.locator('div.owl-stage')
 
     image_list = get_image_list(image_container)
-    product_name, price, period = get_product_details(contents)
+    product_name, price, price_unit, period = get_product_details(contents)
 
     category = get_category(product_name)
     start_date = get_start_date(period)
@@ -219,6 +241,7 @@ def scrap(container, page):
     scrap_results.append({
         "product_name": product_name,
         "price": price,
+        "unit": price_unit,
         "category": category,
         "start_date": start_date,
         "end_date": end_date,
@@ -269,7 +292,13 @@ def run():
             scrap(container, page)
         except Exception as e:
             print("Exception: ", e)
-            raise e
+            return {
+                'status_code': 500,
+                'from': 'swagkey',
+                'body': {
+                    'error': str(e)
+                }
+            }
 
     save_new_container_count('swagkey-container-count', str(new_container_count))
     page.close()
@@ -282,16 +311,16 @@ def handler(event, context):
     thread.start()
     thread.join()
 
-    if scrap_results:
+    if not scrap_results:
         return {
-            'status_code': 200,
+            'status_code': 204,
             'from': 'swagkey',
-            'bucket_name': 'bucket-for-scraping-lambda',
-            'body': scrap_results
+            'body': 'No content to scrap'
         }
 
     return {
-        'status_code': 500,
+        'status_code': 200,
         'from': 'swagkey',
+        'bucket_name': 'bucket-for-scraping-lambda',
         'body': scrap_results
     }
