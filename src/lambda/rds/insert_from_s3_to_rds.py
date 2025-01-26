@@ -50,29 +50,16 @@ def insert_to_rdb(contents):
         product_url = content['product_url']
         image_url = ",".join(content['image_url']).strip("[]")
 
-        isStartDateNull = 'start_date' == '' or start_date == None or start_date == '0000-00-00'
-        isEndDateNull = 'end_date' == '' or end_date == None or end_date == '0000-00-00'
+        if start_date == "" or start_date == 0:
+            start_date = None
 
-        if isStartDateNull and isEndDateNull:
-            sql_query = ("""
-                INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
-                VALUES (%s, %s, %s, %s, NULL, NULL, %s, %s, %s)
-            """)
-        elif isStartDateNull:
-            sql_query = ("""
-                INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
-                VALUES (%s, %s, %s, %s, NULL, %s, %s, %s, %s)
-            """)
-        elif isEndDateNull:
-            sql_query = ("""
-                INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
-                VALUES (%s, %s, %s, %s, %s, NULL, %s, %s, %s)
-            """)
-        else:
-            sql_query = ("""
-                INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """)
+        if end_date == "" or end_date == 0:
+            end_date = None
+
+        sql_query = ("""
+            INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """)
 
         try:
             cur.execute(sql_query,
