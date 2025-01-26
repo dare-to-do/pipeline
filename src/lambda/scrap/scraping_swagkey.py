@@ -148,10 +148,9 @@ def get_start_date(period):
     period = exclude_special_string(period, "판매기간")
     period = exclude_special_string(period, "판매일정")
     period = period.split("~")
-    start_date = ""
 
     if len(period) == 1 and "부터" not in period[0]:
-        return start_date
+        return None
 
     if len(period) == 1:
         start_date = period[0].strip()
@@ -178,10 +177,9 @@ def get_end_date(period):
     period = exclude_special_string(period, "판매기간")
     period = exclude_special_string(period, "판매일정")
     period = period.split("~")
-    end_date = ""
 
     if len(period) == 1 and "까지" not in period[0] and "to" not in period[0]:
-        return end_date
+        return None
 
     if len(period) == 1:
         end_date = period[0].strip()
