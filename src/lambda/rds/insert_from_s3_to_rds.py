@@ -52,19 +52,25 @@ def insert_to_rdb(contents):
 
         if start_date == "" or start_date == 0:
             start_date = None
-
         if end_date == "" or end_date == 0:
             end_date = None
 
-        sql_query = ("""
+        sql_product = ("""
             INSERT INTO product (name, price, price_unit, type, start_date, end_date, status, image_url, product_url)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """)
-
         try:
-            cur.execute(sql_query,
+            cur.execute(sql_product,
                         (product_name, price, unit, category, start_date, end_date, period_status, image_url,
                          product_url))
+            product_id = cur.lastrowid
+
+            sql_groupbuy = ("""
+                INSERT INTO group_buys (product_id, start_date_time, end_date_time, status)
+                VALUES (%s, %s, %s, %s)
+            """)
+            cur.execute(sql_groupbuy, (product_id, start_date, end_date, period_status))
+
         except pymysql.MySQLError as e:
             print(f"Error executing SQL query: {str(e)}")
             conn.rollback()
